@@ -1,14 +1,37 @@
-https://forum.wordreference.com/threads/subject-vs-course.1556086/post-7841826
-
 ## Assumptions
 * A Subject is parent of course. For eg a subject can be English and course
 can be "Shakespeare", "Essay Writing", etc.
+  
+## Tech Stack Used
+* Used Django version 3.1.7
+* Python 3.9.1
+* requirements.txt file contains version for other libraries used.
 
+##Improvements
+
+* video uploading could be time consuming so we can make that call async or
+create another service which does video management. This service will 
+also be responsible for managing the storage.
+* Pagination can be used when list is returned
+  
 ## Steps to run
+* create a virtual environment.
+* pip install requirements.txt
+* start server by `python manage.py runserver.`
+* access the below URLs using postman at localhost
+* use basic auth in postman and enter the credentials below.
 
 ### Authorized users
 * Student: Student/stud
 * Instructor: Instructor/inst
+
+### DB Schema
+* Table Subject with foreign key as user.
+* Table Course with foreign key as subject.
+* Table Tags which share many to many relation with Webinar/videos
+* Table Webinar which shares many to many relateion with Course, Subject and Tags.
+* Table Video which shares many to many relateion with Course, Subject and Tags.
+
 
 ## REST API
 
@@ -16,6 +39,8 @@ can be "Shakespeare", "Essay Writing", etc.
 
 #### Create Subject
 POST /webapp/subject/
+
+
 ![alt text](readme-images/subject-create.png)
 
 #### Get Subject
@@ -78,7 +103,7 @@ PATCH /webapp/tags/<id>/
 
 #### Webinar Create
 POST /webapp/webinar/
-![alt text](readme-images/tags-student-denied.png)
+![alt text](readme-images/webinar-create.png)
 
 DELETE, PATCH will work the same with url /webapp/webinar/<webinar-id>
 
@@ -94,7 +119,7 @@ POST /webapp/video/
 two fields one is the tags and the other is new_tags. tags is a list
 of existing tag id and new_tags is a list of string tags**
 
-DELETE, PATCH will work the same with url /webapp/webinar/<video-id>
+DELETE, PATCH will work the same with url /webapp/video/{video-id}
 
 
 ### Most viewd videos/webinars/courses
@@ -103,8 +128,8 @@ When a GET request is called on video/webinar/course a count
 is incremented. The increment operation is made atomic.
 based on count the list is sorted.
 
-GET /webapp/<webinar|video>/mostviewed
-GET /webapp/subject/<subject-id>/course/mostviewed/
+GET /webapp/{webinar|video}/mostviewed
+GET /webapp/subject/{subject-id}/course/mostviewed/
 ![alt text](readme-images/most-viewed.png)
 
 ### Student viewing list webinar/videos.
@@ -127,9 +152,3 @@ Returns current webinar and list of related webinars and videos
 ![alt text](readme-images/suggestions.png)
 
 
-##Improvements
-
-* video uploading could be time consuming so make that call async or
-create another service which does video management. This service will 
-  also be responsible for managing the storage.
-  * Pagination can be used when list is returned.
